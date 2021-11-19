@@ -82,6 +82,30 @@ client.connect((err) => {
         const result = await reviewCollection.find({}).toArray();
         res.send(result);
     });
+
+    //Add Users 
+    app.post("/addUserInfo", async (req, res) => {
+        const result = await usersCollection.insertOne(req.body)
+        res.send(result);
+    });
+
+    // Get Users
+    app.get("/checkAdmin/:email", async (req, res) => {
+        const result = await usersCollection.find({ email: req.params.email }).toArray();
+        res.send(result);
+    });
+
+    app.put("/makeAdmin", async (req, res) => {
+        const filter = { email: req.body.email };
+        const result = await usersCollection.find({ filter }).toArray();
+        if (result) {
+            const document = await usersCollection.updateOne(filter, {
+                $set: { role: "admin" }
+            })
+        }
+    });
+
+
 });
 
 
